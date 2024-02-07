@@ -39,6 +39,28 @@ for produto in produtosEmEstoque:
 vendasPorCliente = cursor.execute('SELECT Clientes.nome AS nome_cliente, Produtos.nome AS nome_produto, Vendas.quantidade FROM Vendas JOIN Clientes ON Vendas.cliente_id = Clientes.clienteID JOIN Produtos ON Vendas.produto_id = Produtos.produtoID WHERE Vendas.cliente_id = 3')
 for venda in vendasPorCliente:
     print(venda)
+    
+
+totalVendasPorCategoria = cursor.execute('SELECT Produtos.categoria, SUM(Vendas.quantidade) AS total_vendas FROM Vendas JOIN Produtos ON Vendas.produto_id = Produtos.produtoID GROUP BY Produtos.categoria')
+for total_vendas_categoria in totalVendasPorCategoria:
+    print(total_vendas_categoria)
+
+
+produtosMaisVendidos = cursor.execute('SELECT Produtos.nome, SUM(Vendas.quantidade) AS total_vendas FROM Vendas JOIN Produtos ON Vendas.produto_id = Produtos.produtoID GROUP BY Produtos.nome ORDER BY total_vendas DESC')
+for produto_mais_vendido in produtosMaisVendidos:
+    print(produto_mais_vendido)
+    
+
+# ATUALIZAÇÃO:
+#diminui a quantidade em estoque do produto com produtoID 2 em 3 
+atualizarQuantidade = cursor.execute('UPDATE Produtos SET estoque = estoque - 3 WHERE produtoID = 2')
+mercado.commit()
+
+#remove um cliente com clienteID 4 do banco de dados
+removerCliente = cursor.execute('DELETE FROM Clientes WHERE clienteID = 4')
+mercado.commit()
+
+
 
 mercado.commit()
 mercado.close
